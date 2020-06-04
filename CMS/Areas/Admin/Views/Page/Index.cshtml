@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+@model IEnumerable<Page>
+
+<div class="container mt-2">
+    <div class="row">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">
+                    List of Pages
+                </div>
+                <div class="card-body">
+                    <table class="table sorting" id="pages"> 
+                        <thead>
+                            <tr class="home">
+                                <th>Title</th>
+                                <th>Slug</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr id="id_@item.Id" class="@item.Slug">
+                                    <td>@item.Title</td>
+                                    <td>@item.Slug</td>
+                                    <td>
+                                        <a asp-action="Details" class="btn btn-info" asp-route-id="@item.Id">Details</a> |
+                                        <a asp-action="Edit" class="btn btn-warning" asp-route-id="@item.Id">Edit</a> |
+                                        @if (item.Slug != "home")
+                                        {
+                                            <a asp-action="Delete" class="btn btn-danger confirmDeletion" asp-route-id="@item.Id">Delete</a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <a asp-action="Create" class="btn btn-dark btn-block">Create a New One</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $("table#pages tbody").sortable({
+            items: "tr:not(.home)",
+            placeholder: "ui-state-highlight",
+            update: function () {
+                let ids = $("table#pages tbody").sortable("serialize");
+                let url = "/admin/page/reorder";
+
+                $.post(url, ids, function () { })
+            }
+        });
+    </script>
+}
+
